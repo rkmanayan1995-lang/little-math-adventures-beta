@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <linearGradient id="splashBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7" />
+      <stop offset="60%" stop-color="#FDFCF7" />
+      <stop offset="100%" stop-color="#E0E7FF" />
+    </linearGradient>
+    <linearGradient id="btnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1080" height="1920" fill="url(#splashBg)" />
+
+  <!-- Center Floating Emblem -->
+  <g transform="translate(540, 850)">
+    <!-- App Emblem Badge -->
+    <rect x="-160" y="-160" width="320" height="320" rx="80" fill="url(#btnGrad)" />
+    <circle cx="0" cy="0" r="105" fill="#FFFFFF" />
+    <path d="M -55 45 L -55 -40 L 0 5 L 55 -40 L 55 45" fill="none" stroke="#F59E0B" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 0 -85 L 8 -65 L 28 -65 L 12 -53 L 18 -33 L 0 -45 L -18 -33 L -12 -53 L -28 -65 L -8 -65 Z" fill="#FBBF24" />
+  </g>
+
+  <!-- Typography -->
+  <text x="540" y="1120" font-family="Fredoka, system-ui, sans-serif" font-size="52" font-weight="900" fill="#0F172A" text-anchor="middle">
+    Little Math Adventures
+  </text>
+  <text x="540" y="1175" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="28" font-weight="700" fill="#92400E" text-anchor="middle">
+    Preschool Numbers &amp; Story Adventure
+  </text>
+
+  <!-- Friendly characters tagline -->
+  <text x="540" y="1230" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="22" font-weight="600" fill="#64748B" text-anchor="middle">
+    With Andy, Sancho &amp; Osi 🐶
+  </text>
+</svg>

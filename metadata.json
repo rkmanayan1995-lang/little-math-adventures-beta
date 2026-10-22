@@ -1,0 +1,6 @@
+{
+  "name": "Little Math Adventures — Creative Foundation",
+  "description": "Visual and story foundation, asset inventory, character design system, and interactive preschool math adventure guide for children ages 3–7.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

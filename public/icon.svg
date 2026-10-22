@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="50%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0F172A" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <!-- App Icon Base -->
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#bgGrad)" filter="url(#softShadow)" />
+  <rect x="36" y="36" width="440" height="440" rx="108" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="6" />
+
+  <!-- Center Shield / Emblem -->
+  <circle cx="256" cy="256" r="148" fill="#FFFFFF" opacity="0.96" />
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#FEF3C7" stroke-width="6" />
+
+  <!-- Playful "M" & Star -->
+  <path d="M 180 320 L 180 200 L 256 265 L 332 200 L 332 320" fill="none" stroke="#F59E0B" stroke-width="28" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Golden Crown Star -->
+  <path d="M 256 140 L 265 166 L 292 166 L 270 182 L 278 208 L 256 192 L 234 208 L 242 182 L 220 166 L 247 166 Z" fill="#FBBF24" stroke="#D97706" stroke-width="2" />
+</svg>

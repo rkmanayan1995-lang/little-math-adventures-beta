@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Little Math Adventures — Redirecting</title>
+    <script type="text/javascript">
+      // Single Page Application Redirect for GitHub Pages static hosting
+      // Converts subpaths back into query parameters or root URL to prevent 404 on refresh
+      (function () {
+        var pathSegmentsToKeep = 0;
+        var location = window.location;
+        // Check if hosted under a repository subfolder (e.g. username.github.io/repo-name/)
+        var path = location.pathname;
+        var segments = path.split('/').filter(Boolean);
+        // If on github.io and first segment is repo name
+        if (location.hostname.endsWith('github.io') && segments.length > 0) {
+          pathSegmentsToKeep = 1;
+        }
+
+        var redirectUrl =
+          location.protocol +
+          '//' +
+          location.hostname +
+          (location.port ? ':' + location.port : '') +
+          (pathSegmentsToKeep > 0 ? '/' + segments.slice(0, pathSegmentsToKeep).join('/') : '') +
+          '/?p=' +
+          encodeURIComponent(segments.slice(pathSegmentsToKeep).join('/') + location.search + location.hash);
+
+        // Replace history to root
+        location.replace(redirectUrl);
+      })();
+    </script>
+  </head>
+  <body style="font-family: sans-serif; text-align: center; padding: 40px; background: #FDFCF7; color: #1e293b;">
+    <h1 style="font-size: 20px; font-weight: bold;">Loading Little Math Adventures…</h1>
+    <p style="font-size: 14px; color: #64748b;">Redirecting to the adventure map…</p>
+    <p><a href="./" style="color: #0284c7; text-decoration: underline;">Click here if you are not redirected automatically</a></p>
+  </body>
+</html>
