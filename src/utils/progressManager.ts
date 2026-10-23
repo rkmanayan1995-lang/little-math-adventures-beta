@@ -176,7 +176,8 @@ export const DEFAULT_SETTINGS: PlayerSettings = {
   preferredSpeaker: 'narrator',
   highContrastMode: false,
   reducedMotion: false,
-  textSize: 'standard'
+  textSize: 'standard',
+  language: 'en'
 };
 
 /**
@@ -543,7 +544,10 @@ export class ProgressManager {
         reducedMotion: Boolean(
           parsed.settings?.reducedMotion ?? DEFAULT_SETTINGS.reducedMotion
         ),
-        textSize: parsed.settings?.textSize === 'large' ? 'large' : 'standard'
+        textSize: parsed.settings?.textSize === 'large' ? 'large' : 'standard',
+        language: ['en', 'fil', 'es', 'ja', 'ko', 'zh', 'ar'].includes(parsed.settings?.language)
+          ? parsed.settings.language
+          : DEFAULT_SETTINGS.language || 'en'
       };
 
       // 7. Validate Screen Time Settings
@@ -1413,6 +1417,10 @@ export class ProgressManager {
     if (changed) {
       this.notify();
     }
+  }
+
+  public getSettings(): PlayerSettings {
+    return { ...this.progress.settings };
   }
 
   public updateSettings(partial: Partial<PlayerSettings>) {

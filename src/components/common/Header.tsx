@@ -1,9 +1,11 @@
 import React from 'react';
-import { Volume2, VolumeX, Zap, Settings, Wrench } from 'lucide-react';
+import { Volume2, VolumeX, Zap, Settings, Wrench, Globe, Sparkles } from 'lucide-react';
 import { soundManager } from '../../utils/soundEffects';
 import { progressManager } from '../../utils/progressManager';
 import { EnergyGauge } from '../home/EnergyGauge';
 import { PWAInstallButton } from '../pwa/PWAInstallButton';
+import { t } from '../../utils/localization';
+import { SupportedLanguage, SUPPORTED_LANGUAGES } from '../../types/localization';
 
 interface HeaderProps {
   activeTab: string;
@@ -16,6 +18,7 @@ interface HeaderProps {
   onOpenSettings?: () => void;
   onOpenDevModal?: () => void;
   onOpenBetaModal?: () => void;
+  onOpenLanguageModal?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,19 +31,24 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSpecsModal,
   onOpenSettings,
   onOpenDevModal,
-  onOpenBetaModal
+  onOpenBetaModal,
+  onOpenLanguageModal
 }) => {
+  const currentLang: SupportedLanguage = progressManager.getProgress().settings.language || 'en';
+  const currentLangInfo =
+    SUPPORTED_LANGUAGES.find((l) => l.code === currentLang) || SUPPORTED_LANGUAGES[0];
+
   const navItems = [
-    { id: 'home', label: '🏠 Home' },
-    { id: 'map', label: 'Adventure Map' },
-    { id: 'engine', label: 'Math Engine' },
-    { id: 'intro', label: 'Story Intro' },
-    { id: 'team', label: 'Trio & Roster' },
-    { id: 'expressions', label: '5 Expressions' },
-    { id: 'counting', label: 'Counting Lab' },
-    { id: 'uikit', label: 'UI Kit' },
-    { id: 'specs', label: 'Asset Specs' },
-    { id: 'story', label: 'Story World' }
+    { id: 'home', label: t('nav_home', currentLang) },
+    { id: 'map', label: t('nav_map', currentLang) },
+    { id: 'engine', label: t('nav_engine', currentLang) },
+    { id: 'intro', label: t('nav_intro', currentLang) },
+    { id: 'team', label: t('nav_team', currentLang) },
+    { id: 'expressions', label: t('nav_expressions', currentLang) },
+    { id: 'counting', label: t('nav_counting', currentLang) },
+    { id: 'uikit', label: t('nav_uikit', currentLang) },
+    { id: 'specs', label: t('nav_specs', currentLang) },
+    { id: 'story', label: t('nav_story', currentLang) }
   ];
 
   const handleToggleSound = () => {
@@ -50,8 +58,8 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 pt-[env(safe-area-inset-top,0px)]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4 sm:gap-8">
-        {/* Zone 1: Single text element wordmark */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-6">
+        {/* Zone 1: Wordmark */}
         <div
           onClick={() => {
             setActiveTab('home');
@@ -62,8 +70,9 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-pink-500 via-amber-400 to-blue-500 flex items-center justify-center text-white font-extrabold text-sm font-fredoka shadow-xs group-hover:scale-105 transition-transform">
             M
           </div>
-          <span className="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 font-fredoka">
-            Little Math Adventures
+          <span className="text-sm sm:text-lg font-extrabold tracking-tight text-slate-900 font-fredoka">
+            <span className="hidden xs:inline">Little Math Adventures</span>
+            <span className="xs:hidden">Math Adv</span>
           </span>
           <span
             onClick={(e) => {
@@ -80,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
           </span>
         </div>
 
-        {/* Zone 2: 4–6 clean single-line text navigation links */}
+        {/* Zone 2: Navigation Links */}
         <nav className="hidden lg:flex items-center gap-6 text-xs font-bold text-slate-600 font-fredoka">
           {navItems.map((item) => (
             <button
@@ -102,7 +111,7 @@ export const Header: React.FC<HeaderProps> = ({
         </nav>
 
         {/* Zone 3: Adventure Energy Gauge & Actions */}
-        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           <EnergyGauge compact />
 
           <button
@@ -120,13 +129,40 @@ export const Header: React.FC<HeaderProps> = ({
 
           <PWAInstallButton variant="secondary" compact className="hidden sm:flex" />
 
+          {/* Conspicuous Language Selector Badge (Globe 🌐 + Flag + Name) */}
+          {onOpenLanguageModal && (
+            <button
+              onClick={() => {
+                soundManager.playPop();
+                onOpenLanguageModal();
+              }}
+              className="group relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white border-2 border-indigo-200/80 shadow-md hover:shadow-lg shadow-indigo-500/30 transition-all hover:scale-105 active:scale-95 cursor-pointer min-h-[44px] min-w-[44px]"
+              title={`${t('settings_select_language', currentLang)} — ${currentLangInfo.nativeName} (${currentLangInfo.name})`}
+              aria-label={`Change language. Current language: ${currentLangInfo.name}`}
+            >
+              <div className="w-6 h-6 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/30">
+                <Globe className="w-3.5 h-3.5 text-amber-300 group-hover:rotate-45 transition-transform duration-300" />
+              </div>
+              <span className="text-base sm:text-lg leading-none drop-shadow-xs select-none" role="img" aria-hidden="true">
+                {currentLangInfo.flag}
+              </span>
+              <span className="font-fredoka font-black text-xs text-white tracking-tight hidden sm:inline">
+                {currentLangInfo.nativeName}
+              </span>
+              <span className="font-fredoka font-black text-[11px] text-white uppercase tracking-wider sm:hidden">
+                {currentLangInfo.code}
+              </span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse hidden md:inline-block shadow-xs" title="Multilingual Ready" />
+            </button>
+          )}
+
           {onOpenSettings && (
             <button
               onClick={() => {
                 soundManager.playPop();
                 onOpenSettings();
               }}
-              className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center active:scale-95"
+              className="p-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 transition-all min-w-[40px] min-h-[40px] flex items-center justify-center active:scale-95 cursor-pointer"
               title="Game & Accessibility Settings"
               aria-label="Open Settings"
             >
@@ -157,7 +193,7 @@ export const Header: React.FC<HeaderProps> = ({
               setActiveTab('specs');
               soundManager.playCelebration();
             }}
-            className="px-4 py-2 text-xs font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0 font-fredoka shadow-xs"
+            className="hidden sm:flex px-4 py-2 text-xs font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0 font-fredoka shadow-xs"
           >
             Asset Guide
           </button>

@@ -19,6 +19,9 @@ import { SettingsModal } from './components/home/SettingsModal';
 import { DeveloperTestingModal, DeveloperActiveBadge } from './components/dev/DeveloperTestingModal';
 import { BetaChecklistModal } from './components/beta/BetaChecklistModal';
 import { OfflineIndicator } from './components/pwa/OfflineIndicator';
+import { LanguageSelectorModal } from './components/common/LanguageSelectorModal';
+import { applyLanguageDirection } from './utils/localization';
+import { SupportedLanguage } from './types/localization';
 import { Sparkles, RefreshCw, AlertCircle, Heart, Sun, Wrench } from 'lucide-react';
 
 export default function App() {
@@ -31,6 +34,7 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isDevModalOpen, setIsDevModalOpen] = useState<boolean>(false);
   const [isBetaModalOpen, setIsBetaModalOpen] = useState<boolean>(false);
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState<boolean>(false);
 
   // Startup Flow: load shell, restore & validate saved progress, route first-time vs returning players
   useEffect(() => {
@@ -151,6 +155,12 @@ export default function App() {
     }
   }, [progress.settings.reducedMotion, progress.settings.textSize]);
 
+  // Synchronize Interface Language & Direction (RTL for Arabic, LTR for others)
+  useEffect(() => {
+    const lang: SupportedLanguage = progress.settings.language || 'en';
+    applyLanguageDirection(lang);
+  }, [progress.settings.language]);
+
   // Keyboard shortcut listener: Shift+D to open Developer QA Testing Mode
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -270,6 +280,7 @@ export default function App() {
         onOpenSettings={() => setIsSettingsOpen(true)}
         onOpenDevModal={() => setIsDevModalOpen(true)}
         onOpenBetaModal={() => setIsBetaModalOpen(true)}
+        onOpenLanguageModal={() => setIsLanguageModalOpen(true)}
       />
 
       {/* Recoverable Startup Error Banner (if any) */}
@@ -430,6 +441,17 @@ export default function App() {
       <BetaChecklistModal
         isOpen={isBetaModalOpen}
         onClose={() => setIsBetaModalOpen(false)}
+      />
+
+      {/* 7-Language Selection Modal (Accessible globally from header or home) */}
+      <LanguageSelectorModal
+        isOpen={isLanguageModalOpen}
+        onClose={() => setIsLanguageModalOpen(false)}
+        currentLanguage={progress.settings.language || 'en'}
+        onSelectLanguage={(newLang) => {
+          progressManager.updateSettings({ language: newLang });
+          applyLanguageDirection(newLang);
+        }}
       />
 
       {/* Non-intrusive Offline Indicator */}

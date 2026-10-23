@@ -4,6 +4,8 @@ import { MathQuestion } from '../../types/mathEngine';
 import { getQuestionsForLevel, validateAnswer } from '../../data/questionBank';
 import { soundManager } from '../../utils/soundEffects';
 import { progressManager } from '../../utils/progressManager';
+import { t } from '../../utils/localization';
+import { SupportedLanguage } from '../../types/localization';
 import { CharacterArtSvg } from '../characters/CharacterArtSvg';
 import { EnergyGauge } from '../home/EnergyGauge';
 import {
@@ -41,6 +43,8 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
   onStartNextLevel,
   allDestinations
 }) => {
+  const currentLang: SupportedLanguage = progressManager.getSettings().language || 'en';
+
   // Retrieve all 10 deterministic questions for this level safely
   const levelNumber = destination?.number ?? 1;
   const questions: MathQuestion[] = getQuestionsForLevel(levelNumber);
@@ -484,7 +488,7 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
             ))}
           </div>
           {ill.formulaDisplay && (
-            <div className="mt-3 text-base sm:text-lg font-black text-emerald-950 font-fredoka bg-emerald-100/80 inline-block px-4 py-1.5 rounded-xl border border-emerald-300">
+            <div className="mt-3 text-base sm:text-lg font-black text-emerald-950 font-fredoka bg-emerald-100/80 inline-block px-4 py-1.5 rounded-xl border border-emerald-300 math-expression" dir="ltr" data-math="true">
               {ill.formulaDisplay}
             </div>
           )}
@@ -521,7 +525,7 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
           )}
 
           {ill.formulaDisplay && (
-            <div className="text-center text-sm sm:text-base font-black text-purple-950 font-fredoka mt-2 bg-purple-100/70 py-1 px-3 rounded-xl inline-block border border-purple-200">
+            <div className="text-center text-sm sm:text-base font-black text-purple-950 font-fredoka mt-2 bg-purple-100/70 py-1 px-3 rounded-xl inline-block border border-purple-200 math-expression" dir="ltr" data-math="true">
               {ill.formulaDisplay}
             </div>
           )}
@@ -533,7 +537,7 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
     if (ill.formulaDisplay) {
       return (
         <div className="bg-slate-50 border-2 border-slate-200 rounded-3xl p-3 sm:p-4 my-3 text-center">
-          <span className="text-lg sm:text-xl font-black text-slate-900 font-fredoka">
+          <span className="text-lg sm:text-xl font-black text-slate-900 font-fredoka math-expression inline-block" dir="ltr" data-math="true">
             {ill.formulaDisplay}
           </span>
         </div>
@@ -721,7 +725,7 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
                         type="button"
                         disabled={isLocked}
                         onClick={() => handleSelectOption(option)}
-                        className={`h-20 sm:h-24 rounded-3xl font-black text-3xl sm:text-4xl font-fredoka border-4 transition-all transform active:scale-95 shadow-md flex items-center justify-center select-none ${
+                        className={`h-20 sm:h-24 rounded-3xl font-black text-3xl sm:text-4xl font-fredoka border-4 transition-all transform active:scale-95 shadow-md flex items-center justify-center select-none math-expression ${
                           isCorrect
                             ? 'bg-emerald-500 text-white border-emerald-600 scale-105 shadow-emerald-200 shadow-xl ring-4 ring-emerald-300'
                             : isWrong
@@ -730,6 +734,8 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
                             ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-75'
                             : 'bg-white hover:bg-amber-50 text-slate-800 border-slate-300 hover:border-amber-400 hover:scale-102'
                         }`}
+                        dir="ltr"
+                        data-math="true"
                         aria-label={`Option: ${option}`}
                       >
                         {option}
@@ -895,7 +901,7 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
                   className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 font-fredoka transition-all active:scale-95"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  <span>Replay Questions</span>
+                  <span>{t('feedback_replay_level', currentLang)}</span>
                 </button>
 
                 <button
@@ -906,7 +912,7 @@ export const LevelQuestModal: React.FC<LevelQuestModalProps> = ({
                   }}
                   className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-slate-800 hover:bg-slate-900 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 font-fredoka shadow-md transition-all active:scale-95"
                 >
-                  <span>Return to Map</span>
+                  <span>{t('action_close', currentLang)}</span>
                 </button>
 
                 {/* Next Level button if available and allowed */}

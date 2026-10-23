@@ -5,8 +5,11 @@ import { PlayerProgress } from '../../types/progress';
 import { EnergyGauge } from './EnergyGauge';
 import { ProgressModal } from './ProgressModal';
 import { SettingsModal } from './SettingsModal';
+import { LanguageSelectorModal } from '../common/LanguageSelectorModal';
 import { soundManager } from '../../utils/soundEffects';
 import { progressManager } from '../../utils/progressManager';
+import { t, applyLanguageDirection } from '../../utils/localization';
+import { SupportedLanguage, SUPPORTED_LANGUAGES } from '../../types/localization';
 import {
   Play,
   Star,
@@ -19,7 +22,8 @@ import {
   Zap,
   Heart,
   ChevronRight,
-  Compass
+  Compass,
+  Globe
 } from 'lucide-react';
 
 interface HomeScreenProps {
@@ -54,6 +58,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   // Modals state
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+
+  const currentLang: SupportedLanguage = progress.settings.language || 'en';
+  const currentLangInfo =
+    SUPPORTED_LANGUAGES.find((l) => l.code === currentLang) || SUPPORTED_LANGUAGES[0];
 
   // Derive current destination and resume state label dynamically
   const currentDestination =
@@ -62,8 +71,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     progress.destinations[0];
 
   const resumeSubtext = progress.resumeState
-    ? `Resume Level ${progress.resumeState.levelNumber} · Question ${progress.resumeState.questionIndex + 1}`
-    : `Continue Level ${currentDestination.number} · ${currentDestination.title}`;
+    ? `${t('action_resume', currentLang)} ${t('map_level', currentLang)} ${progress.resumeState.levelNumber} · Q${progress.resumeState.questionIndex + 1}`
+    : `${t('action_continue', currentLang)} ${t('map_level', currentLang)} ${currentDestination.number} · ${currentDestination.title}`;
 
   // Resume Web Audio context on any interaction
   const handleInteraction = () => {
@@ -283,13 +292,37 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </span>
           </button>
 
+          {/* Conspicuous Language Selector Badge (Globe 🌐 + Flag + Name) */}
+          <button
+            onClick={() => {
+              soundManager.playPop();
+              setShowLanguageModal(true);
+            }}
+            className="group flex items-center gap-1.5 sm:gap-2 px-3 py-2 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white border-2 border-amber-300 shadow-lg hover:shadow-indigo-400/40 hover:scale-105 active:scale-95 transition-all cursor-pointer min-h-[44px]"
+            title={`${t('settings_select_language', currentLang)} — ${currentLangInfo.nativeName} (${currentLangInfo.name})`}
+            aria-label={`Change language. Current language: ${currentLangInfo.name}`}
+          >
+            <div className="w-6 h-6 rounded-lg bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 border border-white/30">
+              <Globe className="w-3.5 h-3.5 text-amber-300 group-hover:rotate-45 transition-transform duration-300" />
+            </div>
+            <span className="text-base sm:text-lg leading-none select-none" role="img" aria-hidden="true">
+              {currentLangInfo.flag}
+            </span>
+            <span className="font-fredoka font-black text-xs text-white">
+              {currentLangInfo.nativeName}
+            </span>
+            <span className="text-[10px] bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider hidden sm:inline shadow-2xs">
+              🌐 Lang
+            </span>
+          </button>
+
           {/* Settings Button */}
           <button
             onClick={() => {
               soundManager.playPop();
               setShowSettingsModal(true);
             }}
-            className="w-10 h-10 rounded-2xl bg-white/90 hover:bg-white border-2 border-slate-300 text-slate-700 flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all"
+            className="w-10 h-10 rounded-2xl bg-white/90 hover:bg-white border-2 border-slate-300 text-slate-700 flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
             title="Game Settings (Sound, Voice & Controls)"
             aria-label="Open Game Settings"
           >
@@ -380,18 +413,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <button
             onClick={handlePlayClick}
             className="w-full py-4 sm:py-5 px-6 rounded-3xl bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-fredoka font-black text-xl sm:text-2xl tracking-wide shadow-xl shadow-emerald-700/25 border-b-6 border-emerald-800 active:border-b-2 active:translate-y-1 transition-all flex items-center justify-center gap-3 sm:gap-4 group cursor-pointer"
-            aria-label="Play Math Adventure"
+            aria-label={progress.resumeState ? t('home_resume_adventure', currentLang) : t('home_start_adventure', currentLang)}
           >
-            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner shrink-0">
               <Play className="w-7 h-7 fill-white text-white translate-x-0.5" />
             </div>
             <div className="flex flex-col items-start text-left">
-              <span className="leading-tight drop-shadow-xs">PLAY ADVENTURE</span>
+              <span className="leading-tight drop-shadow-xs">
+                {progress.resumeState ? t('home_resume_adventure', currentLang).toUpperCase() : t('home_start_adventure', currentLang).toUpperCase()}
+              </span>
               <span className="text-xs font-bold text-emerald-100/90 font-sans tracking-normal">
                 {resumeSubtext}
               </span>
             </div>
-            <Sparkles className="w-6 h-6 text-yellow-300 ml-auto group-hover:rotate-12 transition-transform" />
+            <Sparkles className="w-6 h-6 text-yellow-300 ml-auto group-hover:rotate-12 transition-transform shrink-0" />
           </button>
 
           {/* Secondary Action Row: Progress, Replay Story, Settings */}
@@ -402,10 +437,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 soundManager.playPop();
                 setShowProgressModal(true);
               }}
-              className="py-3 px-4 rounded-2xl bg-amber-50 hover:bg-amber-100 border-2 border-amber-300 text-amber-950 font-fredoka font-black text-sm shadow-sm hover:border-amber-400 active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="py-3 px-4 rounded-2xl bg-amber-50 hover:bg-amber-100 border-2 border-amber-300 text-amber-950 font-fredoka font-black text-sm shadow-sm hover:border-amber-400 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Trophy className="w-4 h-4 text-amber-600 fill-amber-400" />
-              <span>My Progress</span>
+              <span>{t('home_progress_summary', currentLang)}</span>
             </button>
 
             {/* Replay Story Option */}
@@ -414,10 +449,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 soundManager.playPop();
                 onReplayStory();
               }}
-              className="py-3 px-4 rounded-2xl bg-purple-50 hover:bg-purple-100 border-2 border-purple-300 text-purple-950 font-fredoka font-black text-sm shadow-sm hover:border-purple-400 active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="py-3 px-4 rounded-2xl bg-purple-50 hover:bg-purple-100 border-2 border-purple-300 text-purple-950 font-fredoka font-black text-sm shadow-sm hover:border-purple-400 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <BookOpen className="w-4 h-4 text-purple-600" />
-              <span>Replay Story</span>
+              <span>{t('home_replay_story', currentLang)}</span>
             </button>
 
             {/* Settings Button */}
@@ -426,10 +461,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 soundManager.playPop();
                 setShowSettingsModal(true);
               }}
-              className="py-3 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-800 font-fredoka font-black text-sm shadow-sm hover:border-slate-400 active:scale-98 transition-all flex items-center justify-center gap-2"
+              className="py-3 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 border-2 border-slate-300 text-slate-800 font-fredoka font-black text-sm shadow-sm hover:border-slate-400 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Settings className="w-4 h-4 text-slate-600" />
-              <span>Settings</span>
+              <span>{t('settings_title', currentLang)}</span>
             </button>
           </div>
         </div>
@@ -455,6 +490,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           onUpdateSettings={handleUpdateSettings}
           onResetProgress={handleResetProgress}
           onReplayIntro={onReplayStory}
+        />
+      )}
+
+      {/* 7-Language Selection Modal */}
+      {showLanguageModal && (
+        <LanguageSelectorModal
+          isOpen={true}
+          onClose={() => setShowLanguageModal(false)}
+          currentLanguage={currentLang}
+          onSelectLanguage={(newLang) => {
+            handleUpdateSettings({ language: newLang });
+            applyLanguageDirection(newLang);
+          }}
         />
       )}
     </div>

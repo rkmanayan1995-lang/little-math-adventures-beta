@@ -4,7 +4,12 @@
 
 export const VERIFIED_PUBLIC_BETA_URL =
   (typeof import.meta !== 'undefined' && import.meta.env?.VITE_PUBLIC_BETA_URL) ||
-  'https://ais-pre-4boxwfrc4u6ffzkbqmdxjv-683728827707.asia-northeast1.run.app';
+  (typeof window !== 'undefined' &&
+  window.location?.hostname &&
+  !window.location.hostname.includes('localhost') &&
+  !window.location.hostname.includes('127.0.0.1')
+    ? `${window.location.origin}${window.location.pathname.replace(/\/$/, '')}`
+    : 'https://ais-pre-4boxwfrc4u6ffzkbqmdxjv-683728827707.asia-northeast1.run.app');
 
 export const BETA_VERSION = 'v1.0.0-beta';
 export const BETA_STORAGE_KEY_FEEDBACK = 'lma_beta_tester_feedback';

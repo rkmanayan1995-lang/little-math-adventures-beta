@@ -1,4 +1,5 @@
 import { MapDestination } from './creativeFoundation';
+import { SupportedLanguage } from './localization';
 
 export interface PlayerSettings {
   soundMuted: boolean;
@@ -9,6 +10,7 @@ export interface PlayerSettings {
   highContrastMode: boolean;
   reducedMotion: boolean;         // Reduced motion preference for toddlers sensitive to motion
   textSize: 'standard' | 'large'; // Standard or large text accessibility setting
+  language?: SupportedLanguage;   // Multilingual interface preference (defaults to 'en')
 }
 
 export interface PlayerBadge {

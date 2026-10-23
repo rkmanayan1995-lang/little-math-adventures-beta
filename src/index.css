@@ -95,3 +95,30 @@ html, body {
   font-size: 1.25rem !important;
   line-height: 1.75rem !important;
 }
+
+/* ========================================================
+   RTL Support (Arabic)
+   Ensures natural right-to-left flow for UI while preserving
+   logical left-to-right math equations, digits, and character art
+   ======================================================== */
+[dir="rtl"] {
+  text-align: start;
+}
+
+/* Math equations, arithmetic formulas, numbers, and code digits must remain LTR */
+[dir="rtl"] .math-expression,
+[dir="rtl"] .math-formula,
+[dir="rtl"] [data-math="true"],
+[dir="rtl"] .font-mono {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  display: inline-block;
+}
+
+/* Character illustrations and artwork are never mirrored in RTL */
+.character-art-canvas,
+.character-svg-badge,
+[data-character="true"] {
+  transform: none !important;
+}
+

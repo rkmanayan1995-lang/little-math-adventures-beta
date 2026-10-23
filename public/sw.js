@@ -1,10 +1,10 @@
 /**
  * Little Math Adventures — Progressive Web App (PWA) Service Worker
- * Cache Version: lma-pwa-v1.0.0
+ * Cache Version: lma-pwa-v1.1.0
  * Provides offline math adventure gameplay, audio, and visual asset caching.
  */
 
-const CACHE_NAME = 'lma-pwa-v1.0.0';
+const CACHE_NAME = 'lma-pwa-v1.1.0';
 
 const PRECACHE_ASSETS = [
   './',

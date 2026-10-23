@@ -18,6 +18,8 @@ import {
   shareBetaLink
 } from '../../utils/betaTesting';
 import { soundManager } from '../../utils/soundEffects';
+import { progressManager } from '../../utils/progressManager';
+import { t } from '../../utils/localization';
 import { PWAInstallButton } from '../pwa/PWAInstallButton';
 
 interface BetaTestingCardProps {
@@ -35,6 +37,7 @@ export const BetaTestingCard: React.FC<BetaTestingCardProps> = ({
   const [copyError, setCopyError] = useState<string | null>(null);
   const [shareSuccess, setShareSuccess] = useState<boolean>(false);
 
+  const currentLang = progressManager.getProgress().settings.language || 'en';
   const isDeployed = Boolean(VERIFIED_PUBLIC_BETA_URL && VERIFIED_PUBLIC_BETA_URL.startsWith('http'));
 
   const handleCopy = async () => {
@@ -76,7 +79,7 @@ export const BetaTestingCard: React.FC<BetaTestingCardProps> = ({
         <div>
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-black tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-sans shadow-2xs">
-              BETA TESTING
+              {t('beta_badge', currentLang)}
             </span>
             <span className="text-xs font-bold text-slate-500 font-mono">
               {BETA_VERSION}
@@ -86,10 +89,10 @@ export const BetaTestingCard: React.FC<BetaTestingCardProps> = ({
             </span>
           </div>
           <h3 className="text-base sm:text-lg font-black font-fredoka text-slate-950 mt-1">
-            Little Math Adventures — Beta Version
+            {t('beta_title', currentLang)}
           </h3>
           <p className="text-xs font-bold text-amber-900/95 italic mt-0.5 font-fredoka">
-            “Join Andy, Sancho, and Osi on a math adventure!”
+            {t('beta_subtitle', currentLang)}
           </p>
           <p className="text-[11px] font-medium text-slate-600 mt-0.5">
             Help Andy, Sancho, and Osi test their math adventure!
@@ -106,21 +109,21 @@ export const BetaTestingCard: React.FC<BetaTestingCardProps> = ({
             className="px-3.5 py-2 bg-blue-100 hover:bg-blue-200 text-blue-900 rounded-xl text-xs font-black font-fredoka flex items-center gap-1.5 transition-colors self-start sm:self-auto shrink-0 shadow-2xs cursor-pointer active:scale-95 min-h-[40px]"
           >
             <ClipboardCheck className="w-4 h-4 text-blue-700" />
-            <span>Tester Checklist &amp; Feedback</span>
+            <span>{t('beta_checklist_btn', currentLang)}</span>
           </button>
         )}
       </div>
 
       {/* Description */}
       <p className="text-xs text-slate-600 leading-relaxed">
-        Share this verified public link with beta testers. Testers can play directly in any modern browser on Android phones, iPhones, iPads, and desktop computers—or install it as an app to play offline.
+        {t('beta_description', currentLang)}
       </p>
 
       {/* URL Display Box */}
       <div className="space-y-1.5">
         <label className="text-[11px] font-black uppercase tracking-wider text-slate-500 font-fredoka flex items-center gap-1.5">
           <Globe className="w-3.5 h-3.5 text-blue-600" />
-          <span>Verified Public Beta URL:</span>
+          <span>{t('beta_verified_url', currentLang)}</span>
         </label>
 
         {isDeployed ? (
@@ -159,12 +162,12 @@ export const BetaTestingCard: React.FC<BetaTestingCardProps> = ({
           {copySuccess ? (
             <>
               <CheckCircle2 className="w-4 h-4 text-emerald-300 animate-bounce" />
-              <span>Link copied!</span>
+              <span>{t('action_copied', currentLang)}</span>
             </>
           ) : (
             <>
               <Copy className="w-4 h-4 text-amber-300" />
-              <span>COPY BETA LINK</span>
+              <span>{t('beta_copy_link', currentLang)}</span>
             </>
           )}
         </button>
@@ -179,7 +182,7 @@ export const BetaTestingCard: React.FC<BetaTestingCardProps> = ({
             className="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border-2 border-slate-300 text-slate-800 font-black text-xs font-fredoka flex items-center gap-1.5 transition-all active:scale-95 shadow-xs min-h-[44px]"
           >
             <ExternalLink className="w-4 h-4 text-blue-600" />
-            <span>OPEN GAME</span>
+            <span>{t('beta_open_game', currentLang)}</span>
           </a>
         )}
 
@@ -191,7 +194,7 @@ export const BetaTestingCard: React.FC<BetaTestingCardProps> = ({
             className="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs font-fredoka flex items-center gap-1.5 transition-all active:scale-95 shadow-xs cursor-pointer min-h-[44px]"
           >
             <Share2 className="w-4 h-4 text-slate-950" />
-            <span>{shareSuccess ? 'Shared!' : 'SHARE WITH TESTERS'}</span>
+            <span>{shareSuccess ? t('action_shared', currentLang) : t('beta_share_testers', currentLang)}</span>
           </button>
         )}
 

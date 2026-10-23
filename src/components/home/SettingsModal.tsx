@@ -3,6 +3,9 @@ import { PlayerSettings } from '../../types/progress';
 import { soundManager } from '../../utils/soundEffects';
 import { ParentSettingsModal } from './ParentSettingsModal';
 import { BetaTestingCard } from '../beta/BetaTestingCard';
+import { LanguageSelectorModal } from '../common/LanguageSelectorModal';
+import { SupportedLanguage, SUPPORTED_LANGUAGES } from '../../types/localization';
+import { t, applyLanguageDirection } from '../../utils/localization';
 import {
   Settings,
   Volume2,
@@ -20,7 +23,8 @@ import {
   ShieldCheck,
   CheckCircle2,
   Wrench,
-  Share2
+  Share2,
+  Globe
 } from 'lucide-react';
 
 interface SettingsModalProps {
@@ -46,8 +50,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showParentModal, setShowParentModal] = useState(false);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [pitch, setPitch] = useState<number>(settings.voicePitch || 1.38);
   const [rate, setRate] = useState<number>(settings.voiceRate || 0.86);
+
+  const currentLang: SupportedLanguage = settings.language || 'en';
+  const currentLanguageInfo =
+    SUPPORTED_LANGUAGES.find((l) => l.code === currentLang) || SUPPORTED_LANGUAGES[0];
 
   if (!isOpen) return null;
 
@@ -141,10 +150,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
               <div>
                 <h2 id="settings-modal-title" className="text-xl font-black font-fredoka tracking-tight text-white">
-                  Game Settings & Accessibility
+                  {t('settings_title', currentLang)}
                 </h2>
                 <p className="text-xs text-slate-300 font-medium">
-                  Sound, visual comfort, story replay, and parent limits
+                  {t('settings_subtitle', currentLang)}
                 </p>
               </div>
             </div>
@@ -328,10 +337,82 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
             </div>
 
-            {/* 3. Replay Story Introduction */}
+            {/* 3. Language & Multilingual Selection (Conspicuous Globe 🌐 Section) */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-black text-slate-500 uppercase tracking-wider font-fredoka flex items-center gap-1.5">
+                  <Globe className="w-4 h-4 text-blue-600 animate-pulse" />
+                  <span>{t('settings_language', currentLang)}</span>
+                </h3>
+                <span className="text-[11px] font-black font-fredoka text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full border border-indigo-200">
+                  7 Languages
+                </span>
+              </div>
+
+              <div className="p-4 bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-purple-50/80 border-2 border-indigo-300 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-12 h-12 rounded-2xl bg-white border-2 border-indigo-200 shadow-sm flex items-center justify-center shrink-0 text-3xl">
+                    {currentLanguageInfo.flag}
+                  </div>
+                  <div>
+                    <div className="text-sm font-black text-slate-900 font-fredoka flex items-center gap-2">
+                      <span className="text-base">{currentLanguageInfo.nativeName}</span>
+                      <span className="text-xs font-semibold text-slate-500 font-sans">({currentLanguageInfo.name})</span>
+                      {currentLanguageInfo.direction === 'rtl' && (
+                        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                          RTL
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-slate-600 mt-0.5">
+                      {t('settings_language_desc', currentLang)}
+                    </div>
+
+                    {/* Quick 7-Language Flags Bar */}
+                    <div className="flex items-center gap-1.5 mt-2">
+                      {SUPPORTED_LANGUAGES.map((l) => (
+                        <button
+                          key={l.code}
+                          type="button"
+                          onClick={() => {
+                            soundManager.playPop();
+                            onUpdateSettings({ language: l.code });
+                            applyLanguageDirection(l.code);
+                          }}
+                          className={`text-base p-1 rounded-xl border transition-all cursor-pointer ${
+                            currentLang === l.code
+                              ? 'bg-amber-300 border-amber-500 shadow-xs scale-110 ring-2 ring-amber-300/60'
+                              : 'bg-white/90 border-slate-200 hover:border-indigo-400 hover:scale-110'
+                          }`}
+                          title={`${l.nativeName} (${l.name})`}
+                          aria-label={l.name}
+                        >
+                          {l.flag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundManager.playPop();
+                    setShowLanguageModal(true);
+                  }}
+                  className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white font-black font-fredoka text-xs flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-95 cursor-pointer min-h-[44px] shrink-0 border border-indigo-200/50"
+                  aria-label={t('settings_select_language', currentLang)}
+                >
+                  <Globe className="w-4 h-4 text-amber-300" />
+                  <span>{t('settings_select_language', currentLang)}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* 4. Replay Story Introduction */}
             <div className="space-y-2">
               <h3 className="text-xs font-black text-slate-500 uppercase tracking-wider font-fredoka">
-                Story Exploration
+                {t('settings_story_intro', currentLang)}
               </h3>
               <button
                 type="button"
@@ -516,7 +597,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               }}
               className="px-6 py-2.5 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black font-fredoka text-sm shadow-md transition-all active:scale-95 min-h-[44px]"
             >
-              Done
+              {t('action_done', currentLang)}
             </button>
           </div>
         </div>
@@ -529,6 +610,17 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           onClose={() => setShowParentModal(false)}
         />
       )}
+
+      {/* 7-Language Selection Modal */}
+      <LanguageSelectorModal
+        isOpen={showLanguageModal}
+        onClose={() => setShowLanguageModal(false)}
+        currentLanguage={currentLang}
+        onSelectLanguage={(newLang) => {
+          onUpdateSettings({ language: newLang });
+          applyLanguageDirection(newLang);
+        }}
+      />
     </>
   );
 };
